@@ -60,7 +60,7 @@ int fileX_read(int argc, FILEx* input, const char* format, ...) {
         return UNDEFINED;
     }
 
-    printf("Reading input file \"%s\"\n", input->nFile);
+    // printf("Reading input file \"%s\"\n", input->nFile);
     
     va_list args;
     va_start(args, format);
