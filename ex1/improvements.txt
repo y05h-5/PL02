@@ -1,0 +1,4 @@
+- easier way to choose options
+    - display options each step
+    - choose with numbers instead of string
+    - 
