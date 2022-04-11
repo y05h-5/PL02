@@ -128,30 +128,48 @@ int getUserFlight(char** dprt, char** dstn) {
 	return (error)? FAILURE : SUCCESS;
 }
 
-/* number input, display options */
-int getUserFlight1(char** dprt, char** dstn) {
+/* NEW VER. */
+int getUserFlight1(char** dprt, char** dstn, Flight* flin, Flight* flout, int finlen, int foutlen) {
 	ErrorType error = NO_ERROR;
 	int checkDepart = FAILURE, checkDest = FAILURE;
+    int flight_num = 0; 
+    *dprt = (char*) malloc(32*sizeof(char));
+    *dstn = (char*) malloc(32*sizeof(char));
 
 	printf("\nInput your flight data\n");
-	printf("	Departure Airports: ");
-	*dprt = (char*) malloc(32*sizeof(char));
-	scanf("%s", *dprt);
+	printf("	Arriving From: \n");
+    for (int i = 0; i < finlen; ++i) {
+        printf("        [%d] %s\n", i, flin[i].location);
+    }
+	printf("    Your Flight: ");  scanf("%d", &flight_num);
+    if (flight_num >= finlen || flight_num < 0) {
+        printf("Flight #%d does not exist.\n", flight_num);
+        error = FLIGHT_NUM;
+    }
+    if (!error) {
+        strcpy(*dprt, flin[flight_num].location);
+        flight_num = 0;
 
-	if (!error) {
-		printf("	Destination Airport: ");
-		*dstn = (char*) malloc(32*sizeof(char));
-		scanf("%s", *dstn);
-	}
-
-	if (error) {
+        printf("	Departing To: \n");
+        for (int j = 0; j < foutlen; ++j) {
+            printf("        [%d] %s\n", j, flout[j].location);
+        }
+        printf("    Your Flight: ");  scanf("%d", &flight_num);
+        if (flight_num >= foutlen || flight_num < 0) {
+            printf("Flight #%d does not exist.\n", flight_num);
+            error = FLIGHT_NUM;
+        }
+        if (!error) {
+            strcpy(*dstn, flout[flight_num].location);
+        }
+    }
+    if (error) {
 		error_handler(NULL, error);
-		if (dprt!=NULL) free(dprt);
-		if (dstn!=NULL) free(dstn);
+		if (*dprt!=NULL) free(*dprt);
+		if (*dstn!=NULL) free(*dstn);
 	}
 	return (error)? FAILURE : SUCCESS;
 }
-/*  */
 
 static void print_flight(FILEx* out, Flight* flight, int nl) {
 	if (!nl) printf("	");

@@ -57,6 +57,10 @@ void error_handler(const char* nFile, ErrorType type) {
     case FILE_LOAD_FAILED:  //intentional fallthrough
         printf("          File \"%s\" is unavailable\n", nFile);
         break;
+
+    case FLIGHT_NUM:
+        printf("          Flight number invalid.\n");
+        break;
     default: 
         printf("if you are seeing this, something is wrong with the code.\n");
         exit(EXIT_FAILURE);
