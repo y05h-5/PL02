@@ -105,7 +105,6 @@ int getFlightList(FILEx* file, Flight** flights, int* listlen) {
 	return (error)? FAILURE : SUCCESS;
 }
 
-/* NEW VER. */
 static int getUserFlight(char** airport, Flight* list, int len) {
     ErrorType error = NO_ERROR;
     int flight_num = -1;
