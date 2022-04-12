@@ -107,15 +107,28 @@ int getFlightList(FILEx* file, Flight** flights, int* listlen) {
 
 static int getUserFlight(char** airport, Flight* list, int len, int* flight_num) {
     ErrorType error = NO_ERROR;
-    // int flight_num = -1;
     *flight_num = -1;
 	int retScan = 0;
 	char cleanbuffer = '\0';
 	*airport = NULL;
 
+    char* printedlist[len];
+    int pcnt = 0;
+
     for (int i = 0; i < len; ++i) {
-        printf("        [%d] %s  %d:%d\n", i, list[i].location, list[i].hour, list[i].minute);
+        int skip = 0;
+        for (int j = 0; j < pcnt; ++j) {
+            if (!strcmp(printedlist[j], list[i].location)) skip = 1;
+        }
+        if (!skip) {
+            printf("        [%d] %s\n", pcnt, list[i].location);
+            printedlist[pcnt] = (char*) malloc((strlen(list[i].location)+1)*sizeof(char));
+            strcpy(printedlist[pcnt++], list[i].location);
+        }
+    } for (;pcnt > 0;) {
+        free(printedlist[--pcnt]);
     }
+
 	printf("    Your Flight: ");  
 	retScan = scanf("%d", flight_num);
  	for (;(cleanbuffer=getchar())!='\n' && cleanbuffer!=EOF;) {
@@ -159,7 +172,7 @@ int getUserFlights(char** dprt, char** dstn, Flight* arrList, Flight* dprList, i
     return SUCCESS;
 }
 
-static void print_flight(FILEx* out, Flight* flight, int nl) {
+static void print_flight(FILEx* out, const Flight* flight, int nl) {
 	if (!nl) printf("	");
 	printf("%s %s %d:%d  ", flight->id, flight->location, flight->hour, flight->minute);
 	fileX_write(out, "%s %s %d:%d  ", flight->id, flight->location, flight->hour, flight->minute);
@@ -210,6 +223,7 @@ void searchFlight(FILEx* out, const Flight* arr_list, const Flight* dprt_list,
 		for (int a = 0; a < num_matchedA; ++a) {
 			for (int d = 0; d < num_matchedD; ++d) {
 				if (arr_matched[a].hour > dptr_matched[d].hour) continue;
+
 				if (arr_matched[a].hour == dptr_matched[d].hour) {
 					if (arr_matched[a].minute > dptr_matched[d].minute) continue;
 				}
