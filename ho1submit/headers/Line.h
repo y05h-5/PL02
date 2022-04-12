@@ -1,4 +1,5 @@
 #pragma once
+#include "Point.h"
 
 // Line equation: a*x+b*y+c=0
 typedef struct {

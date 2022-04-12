@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "Triangle.h"
-#include "Point.h"
-#include "Line.h"
+#include "headers/Triangle.h"
+#include "headers/Point.h"
+#include "headers/Line.h"
 
 int constructTriangle(Triangle* pTriangle, Point pts[]) {
 	Line line;
@@ -14,8 +14,11 @@ int constructTriangle(Triangle* pTriangle, Point pts[]) {
 
 	// Here we can construct a valid triangle
 	for (int i = 0; i < 3; ++i) {
-		pTriangle->points[i] = pts[i];	
+		pTriangle->points[i].x = pts[i].x;
+		pTriangle->points[i].y = pts[i].y;	
 	}
+
+    return 1;
 }
 
 void computeTriangleArea(Triangle* pTriangle) {
@@ -33,7 +36,7 @@ void printTriangleInfo(Triangle triangle) {
 	printf("Triangle Information:\n");
 	
 	for (int i = 0; i < 3; ++i) {
-		printf("	vertex #%d: (%f, %f)\n", i, triangle.points[i]);
+		printf("	vertex #%d: (%f, %f)\n", i+1, triangle.points[i].x, triangle.points[i].y);
 	}
 	puts("");
 

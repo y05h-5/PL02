@@ -1,5 +1,5 @@
-#include "Point.h"
-#include "Line.h"
+#include "headers/Point.h"
+#include "headers/Line.h"
 
 int constructLine(Line* pLine, Point p1, Point p2) {
 	if (p1.x==p2.x && p1.y== p2.y) return 0; // Points are the same, not a line

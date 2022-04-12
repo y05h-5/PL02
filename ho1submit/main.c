@@ -3,9 +3,9 @@
 #include <stdlib.h>
 
 // Include all necessary files you need...
-#include "Line.h"
-#include "Point.h"
-#include "Triangle.h"
+#include "headers/Line.h"
+#include "headers/Point.h"
+#include "headers/Triangle.h"
 
 int main() {
 	Point pts[3];
