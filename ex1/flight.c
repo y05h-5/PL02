@@ -105,6 +105,8 @@ int getFlightList(FILEx* file, Flight** flights, int* listlen) {
 	return (error)? FAILURE : SUCCESS;
 }
 
+
+
 static int getUserFlight(char** airport, Flight* list, int len, int* flight_num) {
     ErrorType error = NO_ERROR;
     *flight_num = -1;
@@ -113,23 +115,24 @@ static int getUserFlight(char** airport, Flight* list, int len, int* flight_num)
 	*airport = NULL;
 
     char* printedlist[len];
-    int pcnt = 0;
+    int pcnt = 0, tskip = 0;
+    int nskipped[len];
 
     for (int i = 0; i < len; ++i) {
         int skip = 0;
         for (int j = 0; j < pcnt; ++j) {
             if (!strcmp(printedlist[j], list[i].location)) skip = 1;
+            tskip += skip;
+            nskipped[pcnt] = tskip;
         }
         if (!skip) {
             printf("        [%d] %s\n", pcnt, list[i].location);
             printedlist[pcnt] = (char*) malloc((strlen(list[i].location)+1)*sizeof(char));
             strcpy(printedlist[pcnt++], list[i].location);
         }
-    } for (;pcnt > 0;) {
-        free(printedlist[--pcnt]);
-    }
+    } 
 
-	printf("    Your Flight: ");  
+	printf("    Your Flight: ");
 	retScan = scanf("%d", flight_num);
  	for (;(cleanbuffer=getchar())!='\n' && cleanbuffer!=EOF;) {
 		if (cleanbuffer!=' ' && cleanbuffer!='\n' && cleanbuffer!=EOF)
@@ -143,8 +146,9 @@ static int getUserFlight(char** airport, Flight* list, int len, int* flight_num)
     }
 
     if (!error) {
-		*airport = (char*) malloc(strlen(list[*flight_num].location)*sizeof(char));
-        strcpy(*airport, list[*flight_num].location);
+		*airport = (char*) malloc(strlen(printedlist[*flight_num])*sizeof(char));
+        strcpy(*airport, printedlist[*flight_num]);
+        *flight_num += nskipped[*flight_num];
 	} else {
 		error_handler(NULL, error);
 		if (*airport!=NULL) free(*airport);
@@ -156,7 +160,7 @@ static int getUserFlight(char** airport, Flight* list, int len, int* flight_num)
 int getUserFlights(char** dprt, char** dstn, Flight* arrList, Flight* dprList, int arrlen, int dprlen, int* num_arrival) {
 	ErrorType error = NO_ERROR;
 	int checkArrival = FAILURE, checkDepart = FAILURE;
-	int flight_num = -1; 
+	int flight_num; 
 
     printf("\nInput your flight data\n");
 	
@@ -186,60 +190,64 @@ static int findMatched(Flight** dst, const Flight* flist, int flen, const char* 
 	*dst = (Flight*) malloc(sizeof(Flight));
 	int num_matched = 0;
 
-	for (int i = flight_num; i < flen; ++i) {
+	for (int i = 0; i < flen; ++i) {
 		int different = strcmp(flist[i].location, loc);
 		if (!different) {
 			*dst = realloc((*dst), (++num_matched)*sizeof(Flight));
-			(*dst)[num_matched-1] = flist[i];
+            (*dst)[num_matched-1] = flist[i];
 		}
 	}
 	return num_matched;
 }
 
+static void genFile(FILEx* out, const Flight* arr_matched, const Flight* dptr_matched, int arrlen, int dprtlen, int skip) {
+	enum {NO_NEW_LINE, NEW_LINE};
+
+    int no_match = 0;
+    
+    if (!skip) {    
+        printf("\nAvailable connected flights:\n"); fileX_write(out, "Available connected flights:\n");
+
+        int matched = 0;
+        for (int a = 0; a < arrlen; ++a) {
+            for (int d = 0; d < dprtlen; ++d) {
+                if (arr_matched[a].hour > dptr_matched[d].hour) continue;
+
+                if (arr_matched[a].hour == dptr_matched[d].hour) {
+                    if (arr_matched[a].minute > dptr_matched[d].minute) continue;
+                }
+                print_flight(out, &arr_matched[a], NO_NEW_LINE);
+                print_flight(out, &dptr_matched[d], NEW_LINE);
+                matched++;
+            }
+        }
+        printf("\n%d connected flights found.\n", matched);
+        if (!matched) no_match = 1;
+    }
+    if (skip || no_match) {
+		printf("\nNo connected flights found.\n"); fileX_write(out, "No connected flights found.\n");
+		printf("We are sorry for the inconvenience.\n"); fileX_write(out, "We are sorry for the inconvenience.\n");
+	}
+	printf("output file was created.\n");
+}
+
 void searchFlight(FILEx* out, const Flight* arr_list, const Flight* dprt_list,
 				  int arrlen, int dprtlen, const char* from, const char* to, int num_arrival) 
 {
-	enum {NO_NEW_LINE, NEW_LINE};
-	int skip = 0;
+	int no_match = 0;
 
 	printf("\nWe have %d arrival flights and %d departure flights today.\n",arrlen, dprtlen);
 	printf("Checking for flights from %s to %s...\n", from, to);
-
+    
 	Flight* arr_matched = NULL;
 	int num_matchedA = findMatched(&arr_matched, arr_list, arrlen, from, num_arrival);
-	if (num_matchedA==0) skip = 1;
-
+	if (num_matchedA==0) no_match = 1;
 	Flight* dptr_matched = NULL;
 	int num_matchedD = 0;
-	if (!skip) {
+	if (!no_match) {
 		num_matchedD = findMatched(&dptr_matched, dprt_list, dprtlen, to, 0);
-		if (num_matchedD==0) skip = 1;
+		if (num_matchedD==0) no_match = 1;
 	}
 
-    printf("\nAvailable connected flights:\n");
-    fileX_write(out, "Available connected flights:\n");
-	if (!skip) {
-		int matched = 0;
-		for (int a = 0; a < num_matchedA; ++a) {
-			for (int d = 0; d < num_matchedD; ++d) {
-				if (arr_matched[a].hour > dptr_matched[d].hour) continue;
-
-				if (arr_matched[a].hour == dptr_matched[d].hour) {
-					if (arr_matched[a].minute > dptr_matched[d].minute) continue;
-				}
-				print_flight(out, &arr_matched[a], NO_NEW_LINE);
-				print_flight(out, &dptr_matched[d], NEW_LINE);
-				matched++;
-			}
-		}
-		printf("\n%d connected flights found.\n", matched);
-        if (!matched) skip = 1;
-	}
-    if (skip) {
-		printf("\nNo connected flights found.\n");
-		printf("We are sorry for the inconvenience.\n");
-		fileX_write(out, "No connected flights found.\n");
-		fileX_write(out, "We are sorry for the inconvenience.\n");
-	}
-	printf("output file was created.\n");
+	genFile(out, arr_matched, dptr_matched, num_matchedA, num_matchedD, (no_match)? 1:0);
 }
