@@ -11,6 +11,6 @@ void byebyeFlights(Flight* flights, int len);
 int getFlight(FILEx* file, Flight* flight);
 int getFlightList(FILEx* file, Flight** flights, int* listlen);
 
-int getUserFlights(char** dprt, char** dstn, Flight* flin, Flight* flout, int finlen, int foutlen);
+int getUserFlights(char** dprt, char** dstn, Flight* flin, Flight* flout, int finlen, int foutlen, int* num_arrival);
 void searchFlight(FILEx* out, const Flight* arr_list, const Flight* dprt_list,
-				  int arrlen, int dprtlen, const char* from, const char* to);
+				  int arrlen, int dprtlen, const char* from, const char* to, int num_arrival);

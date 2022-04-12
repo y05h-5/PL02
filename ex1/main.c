@@ -39,9 +39,10 @@ int main(int argc, char* argv[]) {
 			safe_exit(f_arrival, f_departure, EXIT_FAILURE);
 
 		// checkSuccess = getUserFlight(&from, &to);
-        checkSuccess = getUserFlights(&from, &to, arrival, departure, arrlen, dprlen);
+        int flight_num = -1;
+        checkSuccess = getUserFlights(&from, &to, arrival, departure, arrlen, dprlen, &flight_num);
 		if (checkSuccess) 
-			searchFlight(f_out, arrival, departure, arrlen, dprlen, from, to);
+			searchFlight(f_out, arrival, departure, arrlen, dprlen, from, to, flight_num);
 	}
 
 	if (checkArrival) 	byebyeFlights(arrival, arrlen);

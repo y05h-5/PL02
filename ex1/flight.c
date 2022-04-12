@@ -105,9 +105,10 @@ int getFlightList(FILEx* file, Flight** flights, int* listlen) {
 	return (error)? FAILURE : SUCCESS;
 }
 
-static int getUserFlight(char** airport, Flight* list, int len) {
+static int getUserFlight(char** airport, Flight* list, int len, int* flight_num) {
     ErrorType error = NO_ERROR;
-    int flight_num = -1;
+    // int flight_num = -1;
+    *flight_num = -1;
 	int retScan = 0;
 	char cleanbuffer = '\0';
 	*airport = NULL;
@@ -116,21 +117,21 @@ static int getUserFlight(char** airport, Flight* list, int len) {
         printf("        [%d] %s  %d:%d\n", i, list[i].location, list[i].hour, list[i].minute);
     }
 	printf("    Your Flight: ");  
-	retScan = scanf("%d", &flight_num);
+	retScan = scanf("%d", flight_num);
  	for (;(cleanbuffer=getchar())!='\n' && cleanbuffer!=EOF;) {
 		if (cleanbuffer!=' ' && cleanbuffer!='\n' && cleanbuffer!=EOF)
 			error = INPUT_FORMAT;
 	}
 
 	if (retScan != 1) error = DATA_TYPE;
-	else if (!error && (flight_num >= len || flight_num < 0)) {
-        printf("Flight #%d does not exist.\n", flight_num);
+	else if (!error && (*flight_num >= len || *flight_num < 0)) {
+        printf("Flight #%d does not exist.\n", *flight_num);
         error = FLIGHT_NUM;
     }
 
     if (!error) {
-		*airport = (char*) malloc(strlen(list[flight_num].location)*sizeof(char));
-        strcpy(*airport, list[flight_num].location);
+		*airport = (char*) malloc(strlen(list[*flight_num].location)*sizeof(char));
+        strcpy(*airport, list[*flight_num].location);
 	} else {
 		error_handler(NULL, error);
 		if (*airport!=NULL) free(*airport);
@@ -139,18 +140,20 @@ static int getUserFlight(char** airport, Flight* list, int len) {
     return (error)? FAILURE:SUCCESS;
 }
 
-int getUserFlights(char** dprt, char** dstn, Flight* arrList, Flight* dprList, int arrlen, int dprlen) {
+int getUserFlights(char** dprt, char** dstn, Flight* arrList, Flight* dprList, int arrlen, int dprlen, int* num_arrival) {
 	ErrorType error = NO_ERROR;
 	int checkArrival = FAILURE, checkDepart = FAILURE;
-	
+	int flight_num = -1; 
+
     printf("\nInput your flight data\n");
 	
     printf("	Arriving From: \n");
-    checkArrival = getUserFlight(dprt, arrList, arrlen);
+    checkArrival = getUserFlight(dprt, arrList, arrlen, &flight_num);
     if (!checkArrival) return FAILURE;
+    *num_arrival = flight_num;
 
     printf("	Departing To: \n");
-    checkDepart = getUserFlight(dstn, dprList, dprlen);
+    checkDepart = getUserFlight(dstn, dprList, dprlen, &flight_num);
     if (!checkDepart) return FAILURE;
    
     return SUCCESS;
@@ -166,11 +169,11 @@ static void print_flight(FILEx* out, Flight* flight, int nl) {
 	}
 }
 
-static int findMatched(Flight** dst, const Flight* flist, int flen, const char* loc) {
+static int findMatched(Flight** dst, const Flight* flist, int flen, const char* loc, int flight_num) {
 	*dst = (Flight*) malloc(sizeof(Flight));
 	int num_matched = 0;
-	
-	for (int i = 0; i < flen; ++i) {
+
+	for (int i = flight_num; i < flen; ++i) {
 		int different = strcmp(flist[i].location, loc);
 		if (!different) {
 			*dst = realloc((*dst), (++num_matched)*sizeof(Flight));
@@ -181,7 +184,7 @@ static int findMatched(Flight** dst, const Flight* flist, int flen, const char* 
 }
 
 void searchFlight(FILEx* out, const Flight* arr_list, const Flight* dprt_list,
-				  int arrlen, int dprtlen, const char* from, const char* to) 
+				  int arrlen, int dprtlen, const char* from, const char* to, int num_arrival) 
 {
 	enum {NO_NEW_LINE, NEW_LINE};
 	int skip = 0;
@@ -190,13 +193,13 @@ void searchFlight(FILEx* out, const Flight* arr_list, const Flight* dprt_list,
 	printf("Checking for flights from %s to %s...\n", from, to);
 
 	Flight* arr_matched = NULL;
-	int num_matchedA = findMatched(&arr_matched, arr_list, arrlen, from);
+	int num_matchedA = findMatched(&arr_matched, arr_list, arrlen, from, num_arrival);
 	if (num_matchedA==0) skip = 1;
 
 	Flight* dptr_matched = NULL;
 	int num_matchedD = 0;
 	if (!skip) {
-		num_matchedD = findMatched(&dptr_matched, dprt_list, dprtlen, to);
+		num_matchedD = findMatched(&dptr_matched, dprt_list, dprtlen, to, 0);
 		if (num_matchedD==0) skip = 1;
 	}
 
