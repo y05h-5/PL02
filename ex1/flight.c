@@ -111,8 +111,7 @@ static int getUserFlight(char** airport, Flight* list, int len) {
     int flight_num = -1;
 	int retScan = 0;
 	char cleanbuffer = '\0';
-
-    *airport = (char*) malloc(32*sizeof(char));
+	*airport = NULL;
 
     for (int i = 0; i < len; ++i) {
         printf("        [%d] %s  %d:%d\n", i, list[i].location, list[i].hour, list[i].minute);
@@ -130,9 +129,10 @@ static int getUserFlight(char** airport, Flight* list, int len) {
         error = FLIGHT_NUM;
     }
 
-    if (!error) 
+    if (!error) {
+		*airport = (char*) malloc(strlen(list[flight_num].location)*sizeof(char));
         strcpy(*airport, list[flight_num].location);
-    else {
+	} else {
 		error_handler(NULL, error);
 		if (*airport!=NULL) free(*airport);
     }
@@ -140,18 +140,18 @@ static int getUserFlight(char** airport, Flight* list, int len) {
     return (error)? FAILURE:SUCCESS;
 }
 
-int getUserFlights(char** dprt, char** dstn, Flight* flin, Flight* flout, int finlen, int foutlen) {
+int getUserFlights(char** dprt, char** dstn, Flight* arrList, Flight* dprList, int arrlen, int dprlen) {
 	ErrorType error = NO_ERROR;
 	int checkArrival = FAILURE, checkDepart = FAILURE;
 	
     printf("\nInput your flight data\n");
 	
     printf("	Arriving From: \n");
-    checkArrival = getUserFlight(dprt, flin, finlen);
+    checkArrival = getUserFlight(dprt, arrList, arrlen);
     if (!checkArrival) return FAILURE;
 
     printf("	Departing To: \n");
-    checkDepart = getUserFlight(dstn, flout, foutlen);
+    checkDepart = getUserFlight(dstn, dprList, dprlen);
     if (!checkDepart) return FAILURE;
    
     return SUCCESS;
