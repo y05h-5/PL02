@@ -14,8 +14,10 @@ int constructTriangle(Triangle* pTriangle, Point pts[]) {
 
 	// Here we can construct a valid triangle
 	for (int i = 0; i < 3; ++i) {
-		pTriangle->points[i].x = pts[i].x;
-		pTriangle->points[i].y = pts[i].y;	
+        pTriangle->points[i] = (Point) {
+            .x = pts[i].x,
+            .y = pts[i].y
+        };
 	}
 
     return 1;
@@ -33,10 +35,10 @@ void computeTriangleArea(Triangle* pTriangle) {
 }
 
 void printTriangleInfo(Triangle triangle) {
-	printf("Triangle Information:\n");
+	printf("\nTriangle Information:\n");
 	
 	for (int i = 0; i < 3; ++i) {
-		printf("	vertex #%d: (%f, %f)\n", i+1, triangle.points[i].x, triangle.points[i].y);
+		printf("	vertex #%d: (%.3f, %.3f)\n", i+1, triangle.points[i].x, triangle.points[i].y);
 	}
 	puts("");
 

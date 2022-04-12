@@ -24,9 +24,11 @@ int main() {
 		printTriangleInfo(tri);
 		puts("Program terminating with success...");
 	} else {
+        puts("");
 		puts("Triangle was not constructed.");
 		puts("Check your inputs.");
 		puts("Program terminating with failure...");
+        puts("");
 	}
 
 	return (triangleValid)? EXIT_SUCCESS : EXIT_FAILURE;
