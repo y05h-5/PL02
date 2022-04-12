@@ -61,6 +61,11 @@ void error_handler(const char* nFile, ErrorType type) {
     case FLIGHT_NUM:
         printf("          Flight number invalid.\n");
         break;
+    case INPUT_FORMAT:
+        printf("          Invalid input format,\n");
+        printf("          Expected format: <flight number>\n");
+        break;
+
     default: 
         printf("if you are seeing this, something is wrong with the code.\n");
         exit(EXIT_FAILURE);

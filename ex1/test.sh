@@ -1,4 +1,5 @@
-#! /bin/zsh
+#! /usr/bin/bash
+# /bin/zsh
 
 ##########################################################
 #  creates "result.txt" and stores all the output there  #

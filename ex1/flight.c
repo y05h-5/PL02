@@ -89,7 +89,6 @@ int getFlightList(FILEx* file, Flight** flights, int* listlen) {
 	int idx = 0;
 
 	for(ever) {
-
 		int checkGet = getFlight(file, &((*flights)[idx++]));
 		if (checkGet==SUCCESS) {
 			// printf("%s %s %d:%d\n", (*flights)[idx-1].id, (*flights)[idx-1].location, (*flights)[idx-1].hour, (*flights)[idx-1].minute);
@@ -102,6 +101,7 @@ int getFlightList(FILEx* file, Flight** flights, int* listlen) {
 		else break; // EOF
 	}
 	*listlen = idx;
+	
 	return (error)? FAILURE : SUCCESS;
 }
 
@@ -109,17 +109,27 @@ int getFlightList(FILEx* file, Flight** flights, int* listlen) {
 static int getUserFlight(char** airport, Flight* list, int len) {
     ErrorType error = NO_ERROR;
     int flight_num = -1;
+	int retScan = 0;
+	char cleanbuffer = '\0';
 
     *airport = (char*) malloc(32*sizeof(char));
 
     for (int i = 0; i < len; ++i) {
         printf("        [%d] %s  %d:%d\n", i, list[i].location, list[i].hour, list[i].minute);
     }
-	printf("    Your Flight: ");  scanf("%d", &flight_num);
-    if (flight_num >= len || flight_num < 0) {
+	printf("    Your Flight: ");  
+	retScan = scanf("%d", &flight_num);
+ 	for (;(cleanbuffer=getchar())!='\n' && cleanbuffer!=EOF;) {
+		if (cleanbuffer!=' ' && cleanbuffer!='\n' && cleanbuffer!=EOF)
+			error = INPUT_FORMAT;
+	}
+
+	if (retScan != 1) error = DATA_TYPE;
+	else if (!error && (flight_num >= len || flight_num < 0)) {
         printf("Flight #%d does not exist.\n", flight_num);
         error = FLIGHT_NUM;
     }
+
     if (!error) 
         strcpy(*airport, list[flight_num].location);
     else {
