@@ -28,6 +28,7 @@ static int getWord(FILEx* file, char** word) {
 	
 	return SUCCESS;
 }
+
 static int getFlightTime(FILEx* file, int* h, int* m) {
 	ErrorType error = NO_ERROR;
 	int readEOF = fileX_read(2, file, " %d:%d", h, m);
@@ -35,7 +36,7 @@ static int getFlightTime(FILEx* file, int* h, int* m) {
 	return (readEOF)? EOF : SUCCESS;
 }
 
-int getFlight(FILEx* file, Flight* flight) {
+static int getFlight(FILEx* file, Flight* flight) {
 	char *id = NULL, *loc = NULL;
 	int hour = 0, minute = 0;
 

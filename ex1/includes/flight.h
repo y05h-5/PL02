@@ -8,7 +8,6 @@ typedef struct {
 
 void byebyeFlights(Flight* flights, int len);
 
-int getFlight(FILEx* file, Flight* flight);
 int getFlightList(FILEx* file, Flight** flights, int* listlen);
 
 int getUserFlights(char** dprt, char** dstn, Flight* flin, Flight* flout, int finlen, int foutlen, int* num_arrival);
