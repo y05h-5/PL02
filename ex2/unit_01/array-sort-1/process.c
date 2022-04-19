@@ -1,4 +1,3 @@
-
 // Array sorting by using bubble sort
 void sortArray( int *a, int n )
 {
