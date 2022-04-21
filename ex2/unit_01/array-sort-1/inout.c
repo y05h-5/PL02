@@ -5,8 +5,7 @@
 int openFile( FILE **pFile,	// pointer to a file 
 			   char *filename,	// filename is the same as in fopen
 			   char *mode		// mode is the same as in fopen
-								
-			   )
+			)
 {
 	*pFile = fopen( filename, mode );
 	if( *pFile == NULL )

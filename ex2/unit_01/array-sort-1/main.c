@@ -5,7 +5,7 @@
 
 //#define _MYDEBUG
 
-void main( 
+void main( // generates warning 
 	int argc,	
 	char *argv[]
 	)
