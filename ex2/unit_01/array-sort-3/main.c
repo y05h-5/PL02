@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-#define _MYDEBUG
+// #define _MYDEBUG
 
 void main( 
 	int argc,	
