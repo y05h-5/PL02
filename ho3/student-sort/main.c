@@ -6,31 +6,29 @@
 #include "Person_Array.h"
 #include "Sort.h"
 
-int main()
-{
+int main(int argc, char* argv[]) {
 	FILE *in;
 	Person *all;
 	int numOfPersons;
 
-	Date currentDate= { 2020, 4, 24};
+	const Date currentDate = {2022, 4, 28};
 	
+	
+
 	in = fopen("input.txt", "rt");
-	if (in == NULL)
-	{
+	if (in == NULL) {
 		printf("Unable to open input file\n");
 		return EXIT_FAILURE;
 	}
 
 	numOfPersons = countRecords(in);
-	if (numOfPersons == 0)
-	{
+	if (numOfPersons == 0) {
 		printf("No data in input file\n");
 		return EXIT_FAILURE;
 	}
 
 	all = (Person *)malloc(numOfPersons * sizeof(Person));
-	if (all == NULL )
-	{
+	if (all == NULL ) {
 		printf("Memory allocation error\n");
 		return EXIT_FAILURE;
 	}
@@ -38,8 +36,7 @@ int main()
 	rewind(in);
 
 	int count = loadRecordsFromTextFile(in, all, numOfPersons);
-	if (count != numOfPersons)
-	{
+	if (count != numOfPersons) {
 		printf("Unknown error. Please contact the developer\n");
 		return EXIT_FAILURE;
 	}
@@ -48,10 +45,10 @@ int main()
 
 	calculateAges(all, numOfPersons, &currentDate);
 
-	printRecords("Records loaded from input file", stdout, all, numOfPersons);
+	printRecords("Records loaded from input file", stdout, all, numOfPersons); puts("");
 
 	sortByName(all, numOfPersons);
-	printRecords("Records sorted by name", stdout, all, numOfPersons);
+	printRecords("Records sorted by name", stdout, all, numOfPersons); puts("");
 
 	sortByAge(all, numOfPersons);
 	printRecords("Records sorted by age", stdout, all, numOfPersons);

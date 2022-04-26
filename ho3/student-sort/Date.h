@@ -3,11 +3,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct
-{
-	// Complete definition according
-	// to hands-on materials
-	// ...
+typedef struct {
+	int year;
+	int month;
+	int day;
 } Date;
 
 int readDate(FILE *in, Date *pDate);

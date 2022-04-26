@@ -6,8 +6,7 @@
 #define MAX_NAME_LENGTH 10
 #define MAX_ID_LENGTH 12
 
-typedef struct
-{
+typedef struct {
 	char name[MAX_NAME_LENGTH + 1];
 	char id[MAX_ID_LENGTH + 1];
 	Date birthDate;
