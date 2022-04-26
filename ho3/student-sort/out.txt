@@ -1,0 +1,26 @@
+Records loaded from input file
+Name: Smith
+ID: s1234567
+Born in: 1982 10/15 (40 yo)
+Name: Black
+ID: st2345
+Born in: 1900 31/12 (122 yo)
+Name: White
+ID: d2333457
+Born in: 1984 6/13 (38 yo)
+Name: Ashley
+ID: 12345
+Born in: 2016 12/31 (6 yo)
+Records sorted by age
+Name: Ashley
+ID: 12345
+Born in: 2016 12/31 (6 yo)
+Name: White
+ID: d2333457
+Born in: 1984 6/13 (38 yo)
+Name: Smith
+ID: s1234567
+Born in: 1982 10/15 (40 yo)
+Name: Black
+ID: st2345
+Born in: 1900 31/12 (122 yo)

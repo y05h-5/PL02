@@ -6,7 +6,7 @@
 int isLeapYear(int year); // See the function definition below...
 
 int readDate(FILE *in, Date *pDate) {
-	int retScan = fscanf(in, " %d %d %d", &(pDate->year), &(pDate->month), &(pDate->day));
+	int retScan = fscanf(in, "%d %d %d", &(pDate->year), &(pDate->month), &(pDate->day));
 	if(retScan == EOF) return EOF;
 	if (retScan != 3) return 0;
 	return 1;
