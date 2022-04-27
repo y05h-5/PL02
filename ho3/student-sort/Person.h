@@ -13,6 +13,7 @@ typedef struct {
 	int age;
 } Person;
 
+int readPersonBin(FILE *bin, Person *pPerson);
 int readPerson(FILE *in, Person *pPerson);
 void printPerson(FILE *out, const Person *pPerson);
 void printPersonLine(FILE *out, const Person *pPerson);

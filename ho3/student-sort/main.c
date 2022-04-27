@@ -11,6 +11,7 @@
 int main(int argc, char* argv[]) {
 	FILE* config;
 	FILE *in, *out;
+	FILE *bin;
 	Person *all;
 	int numOfPersons;
 
@@ -37,12 +38,18 @@ int main(int argc, char* argv[]) {
 	}
 
 	in = fopen(fin_name, "rt");
+	bin = fopen("data.bin", "wb");
 	if (in == NULL) {
 		printf("Unable to open input file\n");
 		return EXIT_FAILURE;
+	} if (bin == NULL) {
+		printf("Unable to open internal data file\n");
+		return EXIT_FAILURE;
 	}
 
-	numOfPersons = countRecords(in);
+	// numOfPersons = countRecords(in);
+	numOfPersons = countRecords2Bin(in, bin);
+	
 	if (numOfPersons == 0) {
 		printf("No data in input file\n");
 		return EXIT_FAILURE;
@@ -54,15 +61,24 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	rewind(in);
+	fclose(in);
+	fclose(bin);
+	// rewind(in);
 
-	int count = loadRecordsFromTextFile(in, all, numOfPersons);
+	bin = fopen("data.bin", "rb");
+	if (bin == NULL) {
+		printf("Unable to open internal data file\n");
+		return EXIT_FAILURE;
+	}
+
+	int count = loadRecordsFromBinaryFile(in, all, numOfPersons);
+	// int count = loadRecordsFromTextFile(in, all, numOfPersons);
 	if (count != numOfPersons) {
 		printf("Unknown error. Please contact the developer\n");
 		return EXIT_FAILURE;
 	}
 
-	fclose(in);
+	// fclose(in);
 
 	int open_out = strcmp(fout_name, "stdout");
 	if (open_out != 0) {

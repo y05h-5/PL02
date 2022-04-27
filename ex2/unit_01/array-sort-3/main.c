@@ -5,13 +5,8 @@
 
 // #define _MYDEBUG
 
-void main( 
-	int argc,	
-	char *argv[]
-	)
-{
-	if( argc < 3 )
-	{
+void main(int argc,	char *argv[]) {
+	if( argc < 3 ) {
 		printf( "Not enough command line parameters\n" );
 		exit( 1 );
 	}
@@ -27,15 +22,9 @@ void main(
 	int *array; 
 	int size;
 
-	if( !openFile( &fin, argv[1], "rt" ) )
-	{
-		exit( 10 );
-	}
+	if(!openFile( &fin, argv[1], "rt" )) { exit( 10 ); }
 
-	if (!openFile(&fBinData, "data.dat", "wb"))
-	{
-		exit(14);
-	}
+	if (!openFile(&fBinData, "data.dat", "wb")) { exit(14); }
 
 	size = readArrayToTempFile(fin,fBinData);
 
@@ -43,25 +32,19 @@ void main(
 	fclose(fBinData);
 
 	array = (int *)malloc(size * sizeof(int));
-	if (array == NULL)
-	{
+	if (array == NULL) {
 		printf("Unable to allocate the required memory\n");
 		exit(999);
 	}
 
-	if (!openFile(&fBinData, "data.dat", "rb"))
-	{
-		exit(15);
-	}
+	if (!openFile(&fBinData, "data.dat", "rb")) { exit(15); }
 
-	if( size != loadArrayBin(fBinData, array, size) )
-	{
+	if(size != loadArrayBin(fBinData, array, size)) {
 		printf( "Not enough values in the file \"%s\"\n", argv[1] );
 		exit( 33 );
 	}
 	
-	if( fclose( fBinData )==EOF )
-	{
+	if(fclose( fBinData )==EOF) {
 		printf( "Binary file has not been closed\n" );
 	}
 
@@ -72,17 +55,13 @@ void main(
 
 	sortArray( array, size );	
 
-	if( !openFile( &fout, argv[2], "wt" ) )
-	{
-		exit( 11 );
-	}
+	if( !openFile(&fout, argv[2], "wt")) { exit( 11 ); }
 	
 	writeArray( fout, array, size );
 
 	free(array);
 
-	if( fclose( fout )==EOF )
-	{
+	if(fclose( fout )==EOF) {
 		printf( "Output file has not been closed\n" );
 		exit( 21 );
 	}

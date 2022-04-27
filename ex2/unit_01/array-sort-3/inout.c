@@ -71,24 +71,19 @@ int prereadArray(FILE *fin)
 
 // Reading all the data from a text input file
 // and storing them in a temporary binary file
-int readArrayToTempFile(FILE *fin, FILE *fTemp)
-{
+int readArrayToTempFile(FILE *fin, FILE *fTemp) {
 	int count = 0; 
 
-	for (; ; )
-	{
+	for (;;) {
 		int current; 
 
 		int retScan = fscanf(fin, "%d", &current);
 		if (retScan == EOF) break;
-		if (retScan != 1)
-		{
+		if (retScan != 1) {
 			printf("Value No. %d: Incorrect format\n", count + 1);
 			break;
 		}
-
 		fwrite(&current, sizeof(int), 1, fTemp);
-
 		count++;
 	}
 	return count;
