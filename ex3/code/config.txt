@@ -1,0 +1,6 @@
+NUMDOCS = 4
+NUMTERMS = 5
+0 maps.txt
+1 national_park.txt
+2 pet.txt
+3 transport.txt

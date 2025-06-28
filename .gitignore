@@ -10,3 +10,6 @@ ex2/unit_01/array-sort-2/output.txt
 ex2/unit_01/array-sort-3/data.dat
 ex2/unit_01/array-sort-3/input.txt
 ex2/unit_01/array-sort-3/output.txt
+**/build
+**/outputs
+

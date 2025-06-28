@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "error_handler.h": "c",
+        "rectangle.h": "c",
+        "defines.h": "c",
+        "file_handler.h": "c"
+    }
+}
